@@ -4,7 +4,8 @@ ASPARAMS = --32
 LDPARAMS = -melf_i386 -no-pie
 
 objects = loader.o 		\
-          kernel.o
+          kernel.o		\
+		  gdt.o
 
 %.o: %.cpp
 	g++ ${GPPPARAMS} -o $@ -c $<

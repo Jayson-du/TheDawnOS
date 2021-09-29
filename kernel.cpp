@@ -1,6 +1,9 @@
+#include "types.h"
+#include "gdt.h"
+
 void printf(char* str)
 {
-    unsigned short* VideoMemory = (unsigned short*)0xb8000;
+    static uint16_t* VideoMemory = (uint16_t*)0xb8000;
     for(int i = 0;i < str[i];i++)
     {
         VideoMemory[i] = (VideoMemory[i] & 0xFF00) | str[i];
@@ -20,8 +23,10 @@ extern "C" void callConstructors()
     }
 }
 
-extern "C" void kernelMain(void* multiboot_strcuture, unsigned int magicnumber)
+extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
 {
     printf((char*)"Hello World!");
+
+    GlobalDescriptorTable gdt;
     while(1);
 }
