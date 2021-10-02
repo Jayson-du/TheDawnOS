@@ -52,5 +52,7 @@ mykernel.iso: mykernel.bin
 	grub-mkrescue --output=$@ iso
 	rm -rf iso
 
+run: mykernel.iso						#make run,启动虚拟机挂在mykernel.iso镜像
+	virtualbox --startvm "TheDawnOS"
 
 
