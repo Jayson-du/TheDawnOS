@@ -34,7 +34,7 @@ SegmentDescriptor::SegmentDescriptor(uint32_t base, uint32_t limit, uint8_t type
 
     if(limit < 65536)
     {
-        target[6] = 0x80;
+        target[6] = 0x40;
     }
     else
     {

@@ -1,10 +1,28 @@
-GPPPARAMS = -m32 -fno-use-cxa-atexit -fleading-underscore -fno-exceptions -fno-builtin -nostdlib -fno-rtti -fno-pie
+#编译参数
+#			-m32							指定编译为32位应用程序
+#			-fno-use-cxa-atexit				禁用C析构函数__cxa_atexit
+#			-fleading-underscore			编译时在C语言符号前加上下划线
+#			-fno-exceptions					禁用异常机制
+#			-fno-builtin					不使用C语言的内建函数
+#			-nostdlib						不链接系统标准启动文件和标准库文件
+#			-fno-rtti						禁用运行时类型信息
+#			-fno-pie						禁用PIE模式
+
+GPPPARAMS = -m32							\
+			-fno-use-cxa-atexit				\
+			-fleading-underscore			\
+			-fno-exceptions					\
+			-fno-builtin					\
+			-nostdlib						\
+			-fno-rtti						\
+			-fno-pie						\
 
 ASPARAMS = --32
-LDPARAMS = -melf_i386 -no-pie
+LDPARAMS = -melf_i386 						\
+		   -no-pie
 
-objects = loader.o 		\
-          kernel.o		\
+objects = loader.o 							\
+          kernel.o							\
 		  gdt.o
 
 %.o: %.cpp
