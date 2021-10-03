@@ -19,11 +19,12 @@ GPPPARAMS = -m32							\
 
 ASPARAMS = --32
 LDPARAMS = -melf_i386 						\
-		   -no-pie
+		   -no-pie							
 
 objects = loader.o 							\
           kernel.o							\
-		  gdt.o
+		  gdt.o								\
+		  port.o
 
 %.o: %.cpp
 	g++ ${GPPPARAMS} -o $@ -c $<
@@ -55,4 +56,6 @@ mykernel.iso: mykernel.bin
 run: mykernel.iso						#make run,启动虚拟机挂在mykernel.iso镜像
 	virtualbox --startvm "TheDawnOS"
 
-
+.PHONY: clean
+clean:
+	rm -rf ${objects} mykernel.bin mykernel.iso
