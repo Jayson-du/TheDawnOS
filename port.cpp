@@ -1,32 +1,32 @@
 #include "port.h"
 
-/*=======================port=======================*/
-port::port(uint16_t portnumber)
-    : m_nPortNumber(portnumber)
+/*=======================Port=======================*/
+Port::Port(uint16_t Portnumber)
+    : m_nPortNumber(Portnumber)
 {}
 
 
-port::~port()
+Port::~Port()
 {}
 
 
-/*====================portOf8Bit====================*/
-portOf8Bit::portOf8Bit(uint16_t portnumber)
-    : port(portnumber){}
+/*====================PortOf8Bit====================*/
+PortOf8Bit::PortOf8Bit(uint16_t Portnumber)
+    : Port(Portnumber){}
 
-portOf8Bit::~portOf8Bit(){}
+PortOf8Bit::~PortOf8Bit(){}
 
 /*
-*   inb (Bit, port):   从I/O端口读取一个字节
-*   outb(Bit, port):   向I/O端口写入一个字节
+*   inb (Bit, Port):   从I/O端口读取一个字节
+*   outb(Bit, Port):   向I/O端口写入一个字节
 */
-void portOf8Bit::write(uint8_t data)
+void PortOf8Bit::write(uint8_t data)
 {
     /*从data读取一个字节写入m_nPortNumber*/
     __asm__ volatile("outb %0, %1" : "=a" (data) : "Nd" (m_nPortNumber));
 }
 
-uint8_t portOf8Bit::read()
+uint8_t PortOf8Bit::read()
 {
     uint8_t result;
     __asm__ volatile("inb %1, %0" : "=a" (result) : "Nd"(m_nPortNumber));
@@ -34,38 +34,38 @@ uint8_t portOf8Bit::read()
 }
 
 
-/*====================portOf8BitSlow====================*/
-portOf8BitSlow::portOf8BitSlow(uint16_t portnumber)
-    : portOf8Bit(portnumber)
+/*====================PortOf8BitSlow====================*/
+PortOf8BitSlow::PortOf8BitSlow(uint16_t Portnumber)
+    : PortOf8Bit(Portnumber)
 {}
 
-portOf8BitSlow::~portOf8BitSlow()
+PortOf8BitSlow::~PortOf8BitSlow()
 {}
 
-void portOf8BitSlow::write(uint8_t data)
+void PortOf8BitSlow::write(uint8_t data)
 {
-    __asm__ volatile("outb %0, %1\njmp 1f\n1: jmp 1f\n1:" : "=a" (data) : "Nd" (m_nPortNumber));
+    __asm__ volatile("outb %0, %1\njmP 1f\n1: jmP 1f\n1:" : "=a" (data) : "Nd" (m_nPortNumber));
 }
 
-/*====================portOf16Bit====================*/
-portOf16Bit::portOf16Bit(uint16_t portnumber)
-    : port(portnumber)
+/*====================PortOf16Bit====================*/
+PortOf16Bit::PortOf16Bit(uint16_t Portnumber)
+    : Port(Portnumber)
 {}
 
-portOf16Bit::~portOf16Bit()
+PortOf16Bit::~PortOf16Bit()
 {}
 
 /*
-*   inw (Word, port):   从I/O端口读取一个字(WORD,两个字节)
-*   outw(Word, port):   向I/O端口写入一个字(WORD,两个字节)
+*   inw (Word, Port):   从I/O端口读取一个字(WORD,两个字节)
+*   outw(Word, Port):   向I/O端口写入一个字(WORD,两个字节)
 */
-void portOf16Bit::write(uint16_t data)
+void PortOf16Bit::write(uint16_t data)
 {
     /*从data读取一个字写入m_nPortNumber*/
     __asm__ volatile("outw %0, %1" : "=a" (data) : "Nd" (m_nPortNumber));
 }
 
-uint16_t portOf16Bit::read()
+uint16_t PortOf16Bit::read()
 {
     uint16_t result;
     __asm__ volatile("inw %1, %0" : "=a" (result) : "Nd"(m_nPortNumber));
@@ -73,25 +73,25 @@ uint16_t portOf16Bit::read()
 }
 
 
-/*====================portOf32Bit====================*/
-portOf32Bit::portOf32Bit(uint16_t portnumber)
-    : port(portnumber)
+/*====================PortOf32Bit====================*/
+PortOf32Bit::PortOf32Bit(uint16_t Portnumber)
+    : Port(Portnumber)
 {}
 
-portOf32Bit::~portOf32Bit()
+PortOf32Bit::~PortOf32Bit()
 {}
 
 /*
-*   inl (Word, port):   从I/O端口读取32位数据
-*   outl(Word, port):   向I/O端口写入32位数据
+*   inl (Word, Port):   从I/O端口读取32位数据
+*   outl(Word, Port):   向I/O端口写入32位数据
 */
-void portOf32Bit::write(uint32_t data)
+void PortOf32Bit::write(uint32_t data)
 {
     /*从data读取一个32位数据写入m_nPortNumber*/
     __asm__ volatile("outl %0, %1" : "=a" (data) : "Nd" (m_nPortNumber));
 }
 
-uint32_t portOf32Bit::read()
+uint32_t PortOf32Bit::read()
 {
     uint32_t result;
     __asm__ volatile("inl %1, %0" : "=a" (result) : "Nd"(m_nPortNumber));

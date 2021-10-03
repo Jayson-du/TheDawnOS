@@ -2,35 +2,34 @@
 #define __PORT_H
 
 /*         
-*   fileName    :   port.h
+*   fileName    :   Port.h
 *   @brief      :   I/O操作文件
 */
-
 #include "types.h"
 
 /*         
-*   className   :   port
+*   className   :   Port
 *   @brief      :   读写端口基类
 */
-class port
+class Port
 {
 protected:
-    port(uint16_t portnumber);
-    ~port();
+    Port(uint16_t Portnumber);
+    ~Port();
 
 protected:
     uint16_t m_nPortNumber;
 };
 
 /*         
-*   @className  :   portOf8Bit
+*   @className  :   PortOf8Bit
 *   @brief      :   读1个字节的内容
 */
-class portOf8Bit : public port
+class PortOf8Bit : public Port
 {
 public:
-    portOf8Bit(uint16_t portnumber);
-    ~portOf8Bit();
+    PortOf8Bit(uint16_t Portnumber);
+    ~PortOf8Bit();
 
 protected:
     virtual void write(uint8_t data);
@@ -38,27 +37,27 @@ protected:
 };
 
 /*         
-*   className   :   portOf8BitSlow
+*   className   :   PortOf8BitSlow
 *   @brief      :   慢写1个字节
 */
-class portOf8BitSlow : public portOf8Bit
+class PortOf8BitSlow : public PortOf8Bit
 {
 public:
-    portOf8BitSlow(uint16_t portnumber);
-    ~portOf8BitSlow();
+    PortOf8BitSlow(uint16_t Portnumber);
+    ~PortOf8BitSlow();
 
     virtual void write(uint8_t data);
 };
 
 /*         
-*   className   :   portOf16Btye
+*   className   :   PortOf16Btye
 *   @brief      :   读2个字节的内容
 */
-class portOf16Bit : public port
+class PortOf16Bit : public Port
 {
 public:
-    portOf16Bit(uint16_t portnumber);
-    ~portOf16Bit();
+    PortOf16Bit(uint16_t Portnumber);
+    ~PortOf16Bit();
 
 
     virtual void write(uint16_t data);
@@ -66,14 +65,14 @@ public:
 };
 
 /*         
-*   className   :   portOf32Btye
+*   className   :   PortOf32Btye
 *   @brief      :   读4个字节的内容
 */
-class portOf32Bit : public port
+class PortOf32Bit : public Port
 {
 public:
-    portOf32Bit(uint16_t portnumber);
-    ~portOf32Bit();
+    PortOf32Bit(uint16_t Portnumber);
+    ~PortOf32Bit();
 
     virtual void write(uint32_t data);
     virtual uint32_t read();
