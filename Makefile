@@ -25,7 +25,8 @@ objects = loader.o 							\
           kernel.o							\
 		  gdt.o								\
 		  port.o							\
-		  interrupts.o
+		  interrupts.o						\
+		  interruptstubs.o
 
 %.o: %.cpp
 	g++ ${GPPPARAMS} -o $@ -c $<

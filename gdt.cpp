@@ -16,13 +16,13 @@ GlobalDescriptorTable::GlobalDescriptorTable()
 GlobalDescriptorTable::~GlobalDescriptorTable(){}
 
 //数据段
-uint16_t GlobalDescriptorTable::DataSegmentDescriptor()
+uint16_t GlobalDescriptorTable::DataSegmentSelector()
 {
     return (uint8_t*)&dataSegmentDescriptor - (uint8_t*)this;               //得到段内偏移值
 }
 
 //代码段
-uint16_t GlobalDescriptorTable::CodeSegmentDescriptor()
+uint16_t GlobalDescriptorTable::CodeSegmentSelector()
 {
     return (uint8_t*)&codeSegmentDescriptor - (uint8_t*)this;
 }
