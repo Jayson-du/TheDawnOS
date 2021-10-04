@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gdt.h"
+#include "interrupts.h"
 
 /*
 *    显示器方向
@@ -73,6 +74,9 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
     printf("Hello World!\n");
 
     GlobalDescriptorTable gdt;
+
+    InterruptManager interrupts(0x20, &gdt);            //硬件中断偏移是0x20
+    interrupts.Activate();                              //激活中断
     while(1);
 }
 

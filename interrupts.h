@@ -22,6 +22,12 @@ struct GateDescriptor
     uint16_t handlerAddressHighBits;
 }__attribute__((packed));                                   //让编译器不进行内存对齐操作
 
+struct InterruptDescriptorTablePointer
+{
+    uint16_t size;
+    uint32_t base;
+}__attribute__((packed));
+
 /*         
 *   @className  InterruptManager
 *   @brief      中断管理器
@@ -39,6 +45,11 @@ public:
     *   @return    处理玩中断后,返回堆栈栈顶
     */
     static uint32_t HandleInterrupt(uint8_t interruptNumber, uint32_t esp);
+
+    /*           
+    *	@brief     CPU开启中断
+    */
+    void Activate();
 
 protected:
     static GateDescriptor interruptDescriptorTable[256];
@@ -136,6 +147,32 @@ protected:
     static void HandleException0x12();
 
     static void HandleException0x13();
+
+protected:
+    /*           
+    *	@brief     处理异常
+    */
+    void DealWithException(uint16_t& codeSegment, const uint8_t& IDT_INTERRUPT_GATE);
+
+    /*           
+    *	@brief     处理中断
+    */
+    void DealWithInterrupts(uint16_t& codeSegment, const uint8_t& IDT_INTERRUPT_GATE);
+
+private:
+    /*
+    *8259A中断芯片通过两个I/O地址来进行中断相关的数据传输,告诉CPU发生了中断
+    *通常情况下是单个使用或者两级级连(个人理解是两个并联)
+    *使用单个8259A芯片,传输的I/O端口是0x20和0x21
+    *使用两级级连,传输的I/O端口是0x10和0x11
+    *两级级连时,会区分一个主中断与一个从中断
+    */
+    //主中断
+    PortOf8BitSlow m_oPicMasterCommand;
+    PortOf8BitSlow m_oPicMasterData;
+    //从中断
+    PortOf8BitSlow m_oPicSlaveCommand;
+    PortOf8BitSlow m_oPicSlaveData;
 };
 
 #endif
