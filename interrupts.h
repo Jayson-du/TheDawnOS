@@ -15,6 +15,8 @@
 *   @brief      处理中断基类
 */
 
+class InterruptHandler;
+
 /*
 *   @brief      
 */
@@ -83,7 +85,7 @@ protected:
 
     uint16_t m_nHardWareInterruptOffset;
 
-    //InterruptHandler* m_handlerarray[256];
+    InterruptHandler* m_handlerarray[256];
 
 protected:
 /*====================中断====================*/
@@ -196,14 +198,23 @@ private:
 class InterruptHandler
 {
 public:
-    uint32_t HandleInterrupt(uint32_t esp);
+    virtual uint32_t HandleInterrupt(uint32_t esp);
 
-protected:
-    InterruptHandler(/*uint8_t interruptNumber, InterruptManager* pInterruptManager*/);
-    virtual ~InterruptHandler();
+public:
+    InterruptHandler(uint8_t interruptNumber, InterruptManager* pInterruptManager);
+
+    /*
+    *	@brief     因为InterruptManager与InterruptHandler相互引用,所以构造函数与析构函数不能为virtual,
+    *              否则编译会提示
+    *              interrupts.o: In function `__ZN16InterruptHandlerD0Ev':
+    *              interrupts.cpp:(.text+0xb30): undefined reference to `__ZdlPvj'
+    *              跟编译原理相关,暂时先记一下,后续需要查看编译原理
+    */
+    //virtual ~InterruptHandler();      //error,编译会报错
+    ~InterruptHandler();                //correct,编译正常通过
     
-    //uint8_t m_nInterruptNumber;
-    //InterruptManager* m_pInterruptManager;
+    uint8_t m_nInterruptNumber;
+    InterruptManager* m_pInterruptManager;
 
 };
 
