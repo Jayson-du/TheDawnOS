@@ -32,8 +32,8 @@ public:
     ~PortOf8Bit();
 
 protected:
-    virtual void write(uint8_t data);
-    virtual uint8_t read();
+    virtual void Write(uint8_t data);
+    virtual uint8_t Read();
 };
 
 /*         
@@ -46,7 +46,7 @@ public:
     PortOf8BitSlow(uint16_t Portnumber);
     ~PortOf8BitSlow();
 
-    virtual void write(uint8_t data);
+    virtual void Write(uint8_t data);
 };
 
 /*         
@@ -60,8 +60,8 @@ public:
     ~PortOf16Bit();
 
 
-    virtual void write(uint16_t data);
-    virtual uint16_t read();
+    virtual void Write(uint16_t data);
+    virtual uint16_t Read();
 };
 
 /*         
@@ -74,8 +74,8 @@ public:
     PortOf32Bit(uint16_t Portnumber);
     ~PortOf32Bit();
 
-    virtual void write(uint32_t data);
-    virtual uint32_t read();
+    virtual void Write(uint32_t data);
+    virtual uint32_t Read();
 };
 
 #endif

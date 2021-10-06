@@ -10,6 +10,11 @@
 #include "port.h"
 #include "gdt.h"
 
+/*         
+*   @className  InterruptHandler
+*   @brief      处理中断基类
+*/
+
 /*
 *   @brief      
 */
@@ -28,12 +33,14 @@ struct InterruptDescriptorTablePointer
     uint32_t base;
 }__attribute__((packed));
 
+
 /*         
 *   @className  InterruptManager
 *   @brief      中断管理器
 */
 class InterruptManager
 {
+    friend class InterruptHandler;
 public:
     InterruptManager(uint16_t nHardWareInterruptOffset, GlobalDescriptorTable* gdt);
     ~InterruptManager();
@@ -46,19 +53,28 @@ public:
     */
     static uint32_t HandleInterrupt(uint8_t interruptNumber, uint32_t esp);
 
+    uint32_t DoHandleInterrupt(uint8_t interruptNumber, uint32_t esp);
+
     /*           
     *	@brief     CPU开启中断
     */
     void Activate();
+    
+    /*           
+    *	@brief     CPU关闭中断
+    */
+    void Deactivate();
 
 protected:
     static GateDescriptor interruptDescriptorTable[256];
+
+    static InterruptManager* spActiveInterruptManager;
 
     static void SetInterruptDescriptorTableEntry
     (
         uint8_t     interruptNumber,
         uint16_t    codeSegmentSelectorOffset,
-        void (*handler)(),
+        void        (*handler)(),
         uint8_t     DescriptorPrivilegelLevel,
         uint8_t     DescriptorType
     );
@@ -66,6 +82,8 @@ protected:
     static void InterruptIgnore();
 
     uint16_t m_nHardWareInterruptOffset;
+
+    //InterruptHandler* m_handlerarray[256];
 
 protected:
 /*====================中断====================*/
@@ -175,6 +193,18 @@ private:
     PortOf8BitSlow m_oPicSlaveData;
 };
 
+class InterruptHandler
+{
+public:
+    uint32_t HandleInterrupt(uint32_t esp);
+
+protected:
+    InterruptHandler(/*uint8_t interruptNumber, InterruptManager* pInterruptManager*/);
+    virtual ~InterruptHandler();
+    
+    //uint8_t m_nInterruptNumber;
+    //InterruptManager* m_pInterruptManager;
+
+};
+
 #endif
-
-

@@ -9,6 +9,7 @@
 #			-fno-pie						禁用PIE模式
 
 GPPPARAMS = -m32							\
+			-Iinclude						\
 			-fno-use-cxa-atexit				\
 			-fleading-underscore			\
 			-fno-exceptions					\
