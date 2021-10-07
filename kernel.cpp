@@ -76,7 +76,7 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
     GlobalDescriptorTable gdt;
 
     InterruptManager interrupts(0x20, &gdt);            //硬件中断偏移是0x20
-    //interrupts.Activate();                              //激活中断
+    interrupts.Activate();                              //激活中断
     while(1);
 }
 
