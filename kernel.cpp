@@ -2,6 +2,7 @@
 #include "gdt.h"
 #include "interrupts.h"
 #include "keyboard.h"
+#include "mouse.h"
 
 /*
 *    显示器方向
@@ -90,6 +91,7 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
 
     InterruptManager interrupts(0x20, &gdt);            //硬件中断偏移是0x20
     KeyBoardDriver oKeyBoradDriver(&interrupts);        //初始化键盘驱动
+    MouseDriver oMouseDriver(&interrupts);              //初始化鼠标驱动
     interrupts.Activate();                              //激活中断
     while(1);
 }
