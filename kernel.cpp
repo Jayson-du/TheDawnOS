@@ -46,6 +46,18 @@ void printf(const char* str)
     }
 }
 
+/*           
+*	@brief     输出16进制数字
+*	@param[in] data十进制数字
+*/
+void printfHex(uint8_t data)
+{
+    char* hexString = "0x00!";
+    const char* hexNumber = "0123456789ABCDEF";
+    hexString[2] = hexNumber[(data >> 4) & 0x0f];
+    hexString[3] = hexNumber[(data & 0x0f)];
+    printf(hexString); 
+}
 
 typedef void(*constructor)();
 

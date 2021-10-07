@@ -1,5 +1,5 @@
 #因为中断放在CPU的中断寄存器中,因此需要汇编语言来操作寄存器
-.set IRQ_BASE, 0x20
+.set IRQ_BASE, 0x20                                   #处理中断的函数HandleInterruptRequest的基址
 .section .text                                        #代码段
 .extern __ZN16InterruptManager15HandleInterruptEhj    #声明interrupts.h中的InterruptsManager::handleInterrupt函数
 
