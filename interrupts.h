@@ -6,6 +6,54 @@
 *   @brief      操作中断
 *   @author     durz
 */
+
+/*         
+*   @brief 
+*   Early PC using the Intel 8086/8088 process only had a single PC, and are therefore Iimited
+* to 8 interrupts; This was expected to 2 PICs with the introduction of the 286 based PCs;
+*
+*   Typically on system using the Intel 8259 PIC, 16 IRQs are used. IRQs 0 to 7 are managed by
+* 1 Intel 8259, and IRQs 8 to 15 by a second Intel 8259 PIC; The first PIC, the master, is the only
+* one that directly signals the CPU. The second PIC, the slave, instead signals to the master on its
+* IRQ 2 line, and the master passes the signal on to the CPU; There are therefore only 15 interrupt 
+* request linews available for hardware;
+*
+*   On APIC with IOAPIC system, typically there are 24 IRQs available, and the extra 8 IRQs are 
+* used to route PCI interrupts, avoiding conflict between dynamically configured PCI interrupts
+* and statically configured ISA interrupts; On early APIC system with only 16 IRQs or with only
+* Intel 8259 interrupt controllers, PCI interrupt lines were routed to the 16 IRQs using a 
+* PIR(PCI interrupt routing) integrated into the southbridge. On APIC with MSI  system, typically
+* there are 224 interrupts available;
+*
+*   The easiest way of viewing this information on Windows is to use Device Manager or System Information
+*(msinfo32.exe). On Linux, IRQ mapping can be viewed by executing "cat /proc/interrupts" or 
+*using the procinfo Utility
+*
+*Master PIC
+*   @IRQ 0 - system timer(cannot be changed)            ---- 0x20
+*   @IRQ 1 - keyboard controller(cannot be changed)     ---- 0x21
+*   @IRQ 2 - cascaded signals from IRQs 8-15(any devices configured to use IRQ 2 will actually be using IRQ9)
+*   @IRQ 3 - serial port controller for serial port2(shared with serial port4, if present)
+*   @IRQ 4 - serial port controller for serial port1(shared with serial port3, if present)
+*   @IRQ 5 - parallel por2 and 3 or sound card
+*   @IRQ 6 - floppy disk controller
+*   @IRQ 7 - parallel port 1. It is used for printers or for any parallel port if a printer is not
+*present. It can also be potentially be shared with a secondary sound card with careful management 
+*of the port
+*
+*Slave PIC
+*   @IRQ 8 - real-time clock(RTC)
+*   @IRQ 9 - Advanced Configuration and Power Interface(ACPI) system control interrupt on Intel Chipsets.
+*Other chipest manufactures might use another interrupt for this purpose, or make it available for
+*the use of peripherals( any devices configured to use IRQ2 will actually be using IRQ9)
+*   @IRQ 10 - The interrupt is left open for the use of perihperals(open interrupt/available, SCSI or NIC)
+*   @IRQ 11 - The interrupt is left open for the use of perihperals(open interrupt/available, SCSI or NIC)
+*   @IRQ 12 - mouse on PS/2 connector
+*   @IRQ 13 - CPU co-processor or integrated floating point unit or inter-porcessor interrupt(use depends on OS)
+*   @IRQ 14 - primary ATA channel (ATA interface usually serves hard disk drivers and CD drivers)
+*   @IRQ 15 - secondary ATA channel
+*/
+
 #include "types.h"
 #include "port.h"
 #include "gdt.h"
@@ -66,6 +114,11 @@ public:
     *	@brief     CPU关闭中断
     */
     void Deactivate();
+
+    uint16_t GetHardWareInterruptOffset()
+    {
+        return m_nHardWareInterruptOffset;
+    }
 
 protected:
     static GateDescriptor interruptDescriptorTable[256];

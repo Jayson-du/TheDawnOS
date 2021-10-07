@@ -27,7 +27,8 @@ objects = loader.o 							\
 		  gdt.o								\
 		  port.o							\
 		  interrupts.o						\
-		  interruptstubs.o
+		  interruptstubs.o					\
+		  keyboard.o
 
 %.o: %.cpp
 	g++ ${GPPPARAMS} -o $@ -c $<

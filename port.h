@@ -31,7 +31,6 @@ public:
     PortOf8Bit(uint16_t Portnumber);
     ~PortOf8Bit();
 
-protected:
     virtual void Write(uint8_t data);
     virtual uint8_t Read();
 };
