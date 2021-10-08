@@ -3,11 +3,11 @@
 GlobalDescriptorTable::GlobalDescriptorTable()
     : nullSegmentDescriptor(0, 0, 0)
     , unusedSegmentDescriptor(0, 0, 0)
-    , codeSegmentDescriptor(0, 64 * 1024 * 1024, 0x9a)                      //0x9a表示
+    , codeSegmentDescriptor(0, 64 * 1024 * 1024, 0x9a)                                  //0x9a表示
     , dataSegmentDescriptor(0, 64 * 1024 * 1024, 0x92)
 {
     uint32_t i[2];
-    i[0] = sizeof(GlobalDescriptorTable) << 16;                             //偏移两个字节
+    i[0] = sizeof(GlobalDescriptorTable) << 16;                                         //偏移两个字节
     i[1] = (uint32_t)this;
 
     asm volatile("lgdt (%0)": :"p" (((uint8_t *)i) + 2));
@@ -18,7 +18,7 @@ GlobalDescriptorTable::~GlobalDescriptorTable(){}
 //数据段
 uint16_t GlobalDescriptorTable::DataSegmentSelector()
 {
-    return ((uint8_t*)&dataSegmentDescriptor - (uint8_t*)this) >> 3;               //得到段内偏移值
+    return ((uint8_t*)&dataSegmentDescriptor - (uint8_t*)this) >> 3;                    //得到段内偏移值
 }
 
 //代码段
