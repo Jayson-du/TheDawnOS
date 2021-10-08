@@ -4,13 +4,14 @@ GlobalDescriptorTable::GlobalDescriptorTable()
     : nullSegmentDescriptor(0, 0, 0)
     , unusedSegmentDescriptor(0, 0, 0)
     , codeSegmentDescriptor(0, 64 * 1024 * 1024, 0x9a)                                  //0x9a表示
-    , dataSegmentDescriptor(0, 64 * 1024 * 1024, 0x92)
+    //0x9a:10011010
+    , dataSegmentDescriptor(0, 64 * 1024 * 1024, 0x92)                                  //0x92表示
 {
     uint32_t i[2];
     i[0] = sizeof(GlobalDescriptorTable) << 16;                                         //偏移两个字节
-    i[1] = (uint32_t)this;
+    i[1] = (uint32_t)this;                                                              //指向GDT表
 
-    asm volatile("lgdt (%0)": :"p" (((uint8_t *)i) + 2));
+    asm volatile("lgdt (%0)": :"p" (((uint8_t *)i) + 2));                               //GDTR加载GDT表
 }
 
 GlobalDescriptorTable::~GlobalDescriptorTable(){}

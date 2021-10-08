@@ -25,19 +25,30 @@
 *   |                 |             |  16 : 19  |               |                |
 *   ------------------------------------------------------------------------------
 * 全局描述符表结构
-* base      :   基址(注意,base的byte是分散开的)
+* base      :   基址(起始地址)
 * limit     :   寻址最大范围
 * flags     :   标志位,
+* Type      :   标记什么段（数据段、代码段）
 * access    :   访问权限
 */
 
 /*
-* 寻址方式
+*       实模式（0 - 100000）物理地址直接暴露给程序员
+*       保护模式(10FFEF - ~)物理地址不直接暴露给程序员
+*寻址方式：
 *       分段管理:   段基址 + 偏移地址   =>  线性地址
+*       段值存入段寄存器，而该值作为索引，用于在GDT表中寻找到对应的一个表项（段描述符），该表项中还有段地址，段大小，访问控制等信息；
+        得到其中的段地址后再加上合法的段内偏移，即可访问到对应的物理地址；
 *       分页管理:   线性地址(通过页表)  =>  物理地址
 */
 
 #include "types.h"
+
+
+/*!
+*   @class      SegmentDescriptor
+*   @brief      段描述符
+*/
 
 class SegmentDescriptor
 {
@@ -48,7 +59,7 @@ public:
     uint32_t Limit();
 
 private:
-    uint16_t limit;
+    uint16_t limit;                                         //两个字节构成的limit段
     uint16_t base_low;
     uint8_t base_high;
     uint8_t type;
@@ -63,13 +74,22 @@ public:
     GlobalDescriptorTable();
     ~GlobalDescriptorTable();
 
+    /*!
+    *@brief     获取代码段
+    *@return    
+    */
     uint16_t CodeSegmentSelector();
+
+    /*!
+    *@brief     获取数据段
+    *@return    
+    */
     uint16_t DataSegmentSelector();
 
     SegmentDescriptor nullSegmentDescriptor;
     SegmentDescriptor unusedSegmentDescriptor;
-    SegmentDescriptor codeSegmentDescriptor;
-    SegmentDescriptor dataSegmentDescriptor;
+    SegmentDescriptor codeSegmentDescriptor;                //代码段
+    SegmentDescriptor dataSegmentDescriptor;                //数据段
 
 
 };
