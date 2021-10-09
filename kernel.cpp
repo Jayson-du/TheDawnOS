@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gdt.h"
+#include "driver.h"
 #include "interrupts.h"
 #include "keyboard.h"
 #include "mouse.h"
@@ -53,7 +54,7 @@ void printf(const char* str)
 */
 void printfHex(uint8_t data)
 {
-    char* hexString = "0x00!";
+    char* hexString = (char*)"0x00!";
     const char* hexNumber = "0123456789ABCDEF";
     hexString[2] = hexNumber[(data >> 4) & 0x0f];
     hexString[3] = hexNumber[(data & 0x0f)];
@@ -88,11 +89,22 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
     printf("Hello World!\n");
 
     GlobalDescriptorTable gdt;
+    InterruptManager interrupts(0x20, &gdt);                        //硬件中断偏移是0x20
 
-    InterruptManager interrupts(0x20, &gdt);            //硬件中断偏移是0x20
-    KeyBoardDriver oKeyBoradDriver(&interrupts);        //初始化键盘驱动
-    MouseDriver oMouseDriver(&interrupts);              //初始化鼠标驱动
-    interrupts.Activate();                              //激活中断
+    DriverManager oDrvManager;
+
+    KeyBoardEventHandler oKBHandler;
+    KeyBoardDriver oKeyBoradDriver(&interrupts, &oKBHandler);        //初始化键盘驱动
+
+    MouseEventHandle oMouseHandle;
+    MouseDriver oMouseDriver(&interrupts, &oMouseHandle);                          //初始化鼠标驱动
+
+    oDrvManager.AddDriver(&oKeyBoradDriver);
+    oDrvManager.AddDriver(&oMouseDriver);
+
+    oDrvManager.ActivateAllHardWare();                              //激活所有硬件
+
+    interrupts.Activate();                                          //激活中断
     while(1);
 }
 
@@ -119,3 +131,5 @@ void clearScreen(uint8_t& xpos, uint8_t& ypos, uint16_t* VideoMemory, int32_t& p
         ypos = 0;
     }
 }
+
+

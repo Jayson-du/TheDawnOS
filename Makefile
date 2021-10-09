@@ -25,6 +25,7 @@ LDPARAMS = -melf_i386 						\
 objects = loader.o 							\
           kernel.o							\
 		  gdt.o								\
+		  driver.o	      					\
 		  port.o							\
 		  interrupts.o						\
 		  interruptstubs.o					\

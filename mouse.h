@@ -8,11 +8,42 @@
 */
 
 #include "interrupts.h"
+#include "driver.h"
+#include "types.h"
 
-class MouseDriver : public InterruptHandler
+class MouseEventHandle
 {
 public:
-    MouseDriver(InterruptManager* manager);
+    MouseEventHandle();
+
+    /*           
+    *	@brief          处理鼠标按下事件,外部可重写该事件
+    */
+    virtual void OnMouseDown(uint8_t button);
+
+    /*           
+    *	@brief          处理鼠标抬起事件,外部可重写该事件
+    */
+    virtual void OnMouseUp(uint8_t button);
+
+    /*           
+    *	@brief          处理鼠标移动事件,外部可重写该事件
+    *	@param[in]      xpos    x方向坐标
+    *	@param[in]      ypos    y方向坐标
+    */
+    virtual void OnMouseMove(int8_t xpos, int8_t ypos);
+
+    virtual void OnMouseActivate();
+
+private:
+    int8_t m_oXpos;
+    int8_t m_oYpos;
+};
+
+class MouseDriver : public IDriver , public InterruptHandler
+{
+public:
+    MouseDriver(InterruptManager* manager, MouseEventHandle* pHandler);
     ~MouseDriver();
 
     /*           
@@ -21,6 +52,12 @@ public:
     *	@return    
     */
     virtual uint32_t HandleInterrupt(uint32_t esp);
+
+    /*           
+    *	@brief     激活鼠标驱动程序
+    *	@param[in]   
+    */
+    virtual void Activate();
 
 private:
     PortOf8Bit  m_oDataPort;                //数据端口
@@ -40,6 +77,8 @@ private:
     //所以应该用int8_t
     int8_t     m_oXpos;                    //鼠标的x坐标,
     int8_t     m_oYpos;                    //鼠标的y坐标
+
+    MouseEventHandle* m_pHandle;
 };
 
 #endif

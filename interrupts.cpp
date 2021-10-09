@@ -1,6 +1,7 @@
 #include "interrupts.h"
 
 void printf(const char* str);
+void printfHex(uint8_t date);
 
  GateDescriptor InterruptManager::interruptDescriptorTable[256];
  InterruptManager* InterruptManager::spActiveInterruptManager = 0;
@@ -110,11 +111,8 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
     }
     else if(interruptNumber != m_nHardWareInterruptOffset)              //非时钟中断的未知中断
     {
-        char* foo = "BASE INTERRUPT 0X00!";
-        const char* hex = "0123456789ABCDEF";
-        foo[22] = hex[(interruptNumber >> 4) & 0x0f];
-        foo[23] = hex[(interruptNumber & 0x0f)];
-        printf((const char*)foo);                                            
+        printf("UNHANDLED INTERRUPT 0X");
+        printfHex(interruptNumber);                                          
     }
     
     //1判断是否是硬件中断
