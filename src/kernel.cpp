@@ -1,9 +1,14 @@
-#include "types.h"
+#include "common/types.h"
 #include "gdt.h"
-#include "driver.h"
-#include "interrupts.h"
-#include "keyboard.h"
-#include "mouse.h"
+#include "hardwarecommunication/interrupts.h"
+#include "drivers/driver.h"
+#include "drivers/keyboard.h"
+#include "drivers/mouse.h"
+
+using namespace TDOS;
+using namespace TDOS::Common;
+using namespace TDOS::HardWareCommunication;
+using namespace TDOS::Drivers;
 
 /*
 *    显示器方向
@@ -89,15 +94,15 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
     printf("Hello World!\n");
 
     GlobalDescriptorTable gdt;
-    InterruptManager interrupts(0x20, &gdt);                        //硬件中断偏移是0x20
+    TDOS::HardWareCommunication::InterruptManager interrupts(0x20, &gdt);                        //硬件中断偏移是0x20
 
-    DriverManager oDrvManager;
+    TDOS::Drivers::DriverManager oDrvManager;
 
-    KeyBoardEventHandler oKBHandler;
-    KeyBoardDriver oKeyBoradDriver(&interrupts, &oKBHandler);        //初始化键盘驱动
+    TDOS::Drivers::KeyBoardEventHandler oKBHandler;
+    TDOS::Drivers::KeyBoardDriver oKeyBoradDriver(&interrupts, &oKBHandler);        //初始化键盘驱动
 
-    MouseEventHandle oMouseHandle;
-    MouseDriver oMouseDriver(&interrupts, &oMouseHandle);                          //初始化鼠标驱动
+    TDOS::Drivers::MouseEventHandle oMouseHandle;
+    TDOS::Drivers::MouseDriver oMouseDriver(&interrupts, &oMouseHandle);                          //初始化鼠标驱动
 
     oDrvManager.AddDriver(&oKeyBoradDriver);
     oDrvManager.AddDriver(&oMouseDriver);

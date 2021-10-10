@@ -1,20 +1,22 @@
 #因为中断放在CPU的中断寄存器中,因此需要汇编语言来操作寄存器
 .set IRQ_BASE, 0x20                                   #处理中断的函数HandleInterruptRequest的基址
 .section .text                                        #代码段
-.extern __ZN16InterruptManager15HandleInterruptEhj    #声明interrupts.h中的InterruptsManager::handleInterrupt函数
+#声明interrupts.h中的InterruptsManager::handleInterrupt函数
+.extern __ZN4TDOS21HardWareCommunication16InterruptManager15HandleInterruptEhj
 
 #汇编语言的宏定义
 .macro handleInterruptRequest num                                   #中断宏定义
-.global __ZN16InterruptManager26HandleInterruptRequest\num\()Ev     #()是为了区分num与Ev
-__ZN16InterruptManager26HandleInterruptRequest\num\()Ev:
+#()是为了区分num与Ev
+.global __ZN4TDOS21HardWareCommunication16InterruptManager26HandleInterruptRequest\num\()Ev
+__ZN4TDOS21HardWareCommunication16InterruptManager26HandleInterruptRequest\num\()Ev:
     movb $\num + IRQ_BASE, (interruptnumber)
     jmp int_bottom
 .endm
 
 
 .macro HandleException num                                          #异常宏定义
-.global __ZN16InterruptManager19HandleException\num\()Ev
-__ZN16InterruptManager19HandleException\num\()Ev:
+.global __ZN4TDOS21HardWareCommunication16InterruptManager19HandleException\num\()Ev
+__ZN4TDOS21HardWareCommunication16InterruptManager19HandleException\num\()Ev:
     movb $\num, (interruptnumber)
     jmp int_bottom
 .endm
@@ -105,7 +107,7 @@ int_bottom:
 
     pushl %esp
     push (interruptnumber)
-    call __ZN16InterruptManager15HandleInterruptEhj
+    call __ZN4TDOS21HardWareCommunication16InterruptManager15HandleInterruptEhj
 
     movl %eax, %esp
 
@@ -115,8 +117,8 @@ int_bottom:
     popl %ds
     popa
 
-.global __ZN16InterruptManager15InterruptIgnoreEv
-__ZN16InterruptManager15InterruptIgnoreEv:
+.global __ZN4TDOS21HardWareCommunication16InterruptManager15InterruptIgnoreEv
+__ZN4TDOS21HardWareCommunication16InterruptManager15InterruptIgnoreEv:
 
     iret                                                #中断
 

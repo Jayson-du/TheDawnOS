@@ -8,34 +8,36 @@
 #			-fno-rtti						禁用运行时类型信息
 #			-fno-pie						禁用PIE模式
 
-GPPPARAMS = -m32							\
-			-Iinclude						\
-			-fno-use-cxa-atexit				\
-			-fleading-underscore			\
-			-fno-exceptions					\
-			-fno-builtin					\
-			-nostdlib						\
-			-fno-rtti						\
-			-fno-pie						\
+GPPPARAMS = -m32												\
+			-Iinclude											\
+			-fno-use-cxa-atexit									\
+			-fleading-underscore								\
+			-fno-exceptions										\
+			-fno-builtin										\
+			-nostdlib											\
+			-fno-rtti											\
+			-fno-pie											
 
 ASPARAMS = --32
-LDPARAMS = -melf_i386 						\
+LDPARAMS = -melf_i386 											\
 		   -no-pie							
 
-objects = loader.o 							\
-          kernel.o							\
-		  gdt.o								\
-		  driver.o	      					\
-		  port.o							\
-		  interrupts.o						\
-		  interruptstubs.o					\
-		  keyboard.o						\
-		  mouse.o
+objects = obj/loader.o 											\
+		  obj/gdt.o												\
+		  obj/hardwarecommunication/port.o						\
+		  obj/hardwarecommunication/interrupts.o				\
+		  obj/hardwarecommunication/interruptstubs.o			\
+		  obj/drivers/driver.o	      							\
+		  obj/drivers/keyboard.o								\
+		  obj/drivers/mouse.o									\
+		  obj/kernel.o											
 
-%.o: %.cpp
+obj/%.o: src/%.cpp									#当前目录的前一级的所有目录
+	mkdir -p $(@D)
 	g++ ${GPPPARAMS} -o $@ -c $<
 
-%.o: %.s
+obj/%.o: src/%.s
+	mkdir -p $(@D)
 	as ${ASPARAMS} -o $@ $<
 
 mykernel.bin: linker.ld ${objects}
@@ -64,4 +66,4 @@ run: mykernel.iso						#make run,启动虚拟机挂在mykernel.iso镜像
 
 .PHONY: clean
 clean:
-	rm -rf ${objects} mykernel.bin mykernel.iso
+	rm -rf mykernel.bin mykernel.iso obj

@@ -1,4 +1,7 @@
-#include "interrupts.h"
+#include "hardwarecommunication/interrupts.h"
+
+using namespace TDOS::Common;
+using namespace TDOS::HardWareCommunication;
 
 void printf(const char* str);
 void printfHex(uint8_t date);

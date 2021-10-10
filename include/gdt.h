@@ -46,56 +46,59 @@
 *       分页管理:   线性地址(通过页表)  =>  物理地址
 */
 
-#include "types.h"
+#include "common/types.h"
 
-
-/*!
-*   @class      SegmentDescriptor
-*   @brief      段描述符
-*/
-
-class SegmentDescriptor
+namespace TDOS
 {
-public:
-    SegmentDescriptor(uint32_t base, uint32_t limit, uint8_t type);
-    
-    uint32_t Base();
-    uint32_t Limit();
-
-private:
-    uint16_t limit;                                         //两个字节构成的limit段
-    uint16_t base_low;
-    uint8_t base_high;
-    uint8_t type;
-    uint8_t flags_limits;
-    uint8_t base_vhi;
-}__attribute__((packed));                                   //手动设置内存对齐大小
-
-
-class GlobalDescriptorTable
-{
-public:
-    GlobalDescriptorTable();
-    ~GlobalDescriptorTable();
-
     /*!
-    *@brief     获取代码段
-    *@return    
+    *   @class      SegmentDescriptor
+    *   @brief      段描述符
     */
-    uint16_t CodeSegmentSelector();
 
-    /*!
-    *@brief     获取数据段
-    *@return    
-    */
-    uint16_t DataSegmentSelector();
+    class SegmentDescriptor
+    {
+    public:
+        SegmentDescriptor(Common::uint32_t base, Common::uint32_t limit, Common::uint8_t type);
+        
+        Common::uint32_t Base();
+        Common::uint32_t Limit();
 
-    SegmentDescriptor nullSegmentDescriptor;
-    SegmentDescriptor unusedSegmentDescriptor;
-    SegmentDescriptor codeSegmentDescriptor;                //代码段
-    SegmentDescriptor dataSegmentDescriptor;                //数据段
+    private:
+        Common::uint16_t limit;                                         //两个字节构成的limit段
+        Common::uint16_t base_low;
+        Common::uint8_t base_high;
+        Common::uint8_t type;
+        Common::uint8_t flags_limits;
+        Common::uint8_t base_vhi;
+    }__attribute__((packed));                                   //手动设置内存对齐大小
 
 
-};
+    class GlobalDescriptorTable
+    {
+    public:
+        GlobalDescriptorTable();
+        ~GlobalDescriptorTable();
+
+        /*!
+        *@brief     获取代码段
+        *@return    
+        */
+        Common::uint16_t CodeSegmentSelector();
+
+        /*!
+        *@brief     获取数据段
+        *@return    
+        */
+        Common::uint16_t DataSegmentSelector();
+
+        SegmentDescriptor nullSegmentDescriptor;
+        SegmentDescriptor unusedSegmentDescriptor;
+        SegmentDescriptor codeSegmentDescriptor;                //代码段
+        SegmentDescriptor dataSegmentDescriptor;                //数据段
+
+
+    };
+}
+
 
 #endif

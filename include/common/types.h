@@ -1,18 +1,24 @@
-#ifndef _TYPES_H
-#define _TYPES_H
+#ifndef __TDOS__TYPES_H
+#define __TDOS__TYPES_H
 
-#define NULL 0
+namespace TDOS
+{
+    namespace Common
+    {
+        #define NULL 0
+        
+        typedef char int8_t;
+        typedef unsigned char uint8_t;
 
-typedef char int8_t;
-typedef unsigned char uint8_t;
+        typedef short int16_t;
+        typedef unsigned short uint16_t;
 
-typedef short int16_t;
-typedef unsigned short uint16_t;
+        typedef int int32_t;
+        typedef unsigned int uint32_t;
 
-typedef int int32_t;
-typedef unsigned int uint32_t;
-
-typedef long long int int64_t;
-typedef unsigned long long int uint64_t;
+        typedef long long int int64_t;
+        typedef unsigned long long int uint64_t;
+    }
+}
 
 #endif

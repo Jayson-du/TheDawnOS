@@ -1,4 +1,8 @@
-#include "keyboard.h"
+#include "drivers/keyboard.h"
+
+using namespace TDOS::Common;
+using namespace TDOS::HardWareCommunication;
+using namespace TDOS::Drivers;
 
 void printf(const char* str);
 void printfHex(uint8_t data);

@@ -1,4 +1,8 @@
-#include "mouse.h"
+#include "drivers/mouse.h"
+
+using namespace TDOS::Common;
+using namespace TDOS::HardWareCommunication;
+using namespace TDOS::Drivers;
 
 MouseEventHandle::MouseEventHandle()
     : m_oXpos(40)

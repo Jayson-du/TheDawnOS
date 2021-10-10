@@ -1,4 +1,7 @@
-#include "driver.h"
+#include "drivers/driver.h"
+
+using namespace TDOS::Common;
+using namespace TDOS::Drivers;
 
 void IDriver::Activate() 
 {
