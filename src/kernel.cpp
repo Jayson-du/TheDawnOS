@@ -1,6 +1,7 @@
 #include "common/types.h"
 #include "gdt.h"
 #include "hardwarecommunication/interrupts.h"
+#include "hardwarecommunication/pci.h"
 #include "drivers/driver.h"
 #include "drivers/keyboard.h"
 #include "drivers/mouse.h"
@@ -57,12 +58,12 @@ void printf(const char* str)
 *	@brief     输出16进制数字
 *	@param[in] data十进制数字
 */
-void printfHex(uint8_t data)
+void printfHex(uint8_t date)
 {
-    char* hexString = (char*)"0x00!";
+    char* hexString = (char*)"00!";
     const char* hexNumber = "0123456789ABCDEF";
-    hexString[2] = hexNumber[(data >> 4) & 0x0f];
-    hexString[3] = hexNumber[(data & 0x0f)];
+    hexString[0] = hexNumber[(date >> 4) & 0x0f];
+    hexString[1] = hexNumber[date & 0x0f];
     printf(hexString); 
 }
 
@@ -106,6 +107,9 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
 
     oDrvManager.AddDriver(&oKeyBoradDriver);
     oDrvManager.AddDriver(&oMouseDriver);
+
+    PeripheralComponentInterconnectController PCIController;
+    PCIController.SelectDrivers(&oDrvManager);
 
     oDrvManager.ActivateAllHardWare();                              //激活所有硬件
 

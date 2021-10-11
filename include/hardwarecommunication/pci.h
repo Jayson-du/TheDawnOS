@@ -9,11 +9,30 @@
 #include "common/types.h"
 #include "hardwarecommunication/port.h"
 #include "hardwarecommunication/interrupts.h"
+#include "drivers/driver.h"
 
 namespace TDOS
 {
     namespace HardWareCommunication
     {
+        
+        struct PeripheralComponentInterconnectDeviceDescriptor
+        {
+            Common::uint32_t nPortBase;
+            Common::uint32_t nInterrupt;                  //中断
+
+            Common::uint8_t  nBus;
+            Common::uint8_t  nDevice;
+            Common::uint8_t  nFunction;
+
+            Common::uint16_t nDeviceID;
+            Common::uint16_t nVenderID;
+
+            Common::uint8_t  nClassID;
+            Common::uint8_t  nSubClassID;
+            Common::uint8_t  nInterfaceID;
+            Common::uint8_t  nReversion;
+        };
 
         /*
         *                                                   PCI总线控制器
@@ -65,10 +84,16 @@ namespace TDOS
             *	@param[in] nDevice              设备
             */
             bool DeviceHasFunction(Common::uint8_t bus, Common::uint8_t device);
+
+            void SelectDrivers(Drivers::DriverManager* drivermanager);
+
+            PeripheralComponentInterconnectDeviceDescriptor GetDeviceDescriptor(Common::uint8_t nbus,
+                                                                                Common::uint8_t ndevice,
+                                                                                Common::uint8_t nfunction);
         private:
             PortOf32Bit m_nDataPort;                //数据端口
             PortOf32Bit m_nCommandPort;             //命令端口
-        };               
+        };                         
     }
 }
 
