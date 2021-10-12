@@ -14,8 +14,7 @@
 namespace TDOS
 {
     namespace HardWareCommunication
-    {
-        
+    {      
         /*
         *                                                     PCI总线控制器读取的16个寄存器内容
         *            -------------------------------------------------------------------------------------------------------------------------
@@ -54,6 +53,21 @@ namespace TDOS
         *            |      0F      |      3C     |   Max latency     |     Min Grant      |     Interrupt PIN   |    Interrupt Line         |
         *            -------------------------------------------------------------------------------------------------------------------------
         */
+
+        enum BaseAddressRegisterType
+        {
+            MemoryMapping = 0,                            //内存映射
+            IOPort = 1,                                   //I/O端口映射
+        };
+
+        class BaseAddressRegister
+        {
+        public:
+            bool preference;
+            Common::uint8_t* address;
+            Common::uint8_t size;
+            BaseAddressRegisterType type;
+        };
 
         /************************************
         * @struct		PeripheralComponentInterconnectDeviceDescriptor
@@ -129,15 +143,26 @@ namespace TDOS
             */
             bool DeviceHasFunction(Common::uint8_t bus, Common::uint8_t device);
 
-            void SelectDrivers(Drivers::DriverManager* drivermanager);
+            void SelectDrivers(Drivers::DriverManager* drivermanager, InterruptManager* interrupt);
 
             PeripheralComponentInterconnectDeviceDescriptor GetDeviceDescriptor(Common::uint8_t nbus,
                                                                                 Common::uint8_t ndevice,
                                                                                 Common::uint8_t nfunction);
+
+            Drivers::IDriver* GetDriver(PeripheralComponentInterconnectDeviceDescriptor dev,
+                                       InterruptManager* interrupt);
+
+            BaseAddressRegister GetBaseAddressRegister(Common::uint8_t nbus,
+                                                       Common::uint8_t ndevice,
+                                                       Common::uint8_t nfunction,
+                                                       Common::uint8_t bar);
+
+                                                       //BaseAddressRegister
+
         private:
             PortOf32Bit m_nDataPort;                //数据端口
             PortOf32Bit m_nCommandPort;             //命令端口
-        };                         
+        };                       
     }
 }
 

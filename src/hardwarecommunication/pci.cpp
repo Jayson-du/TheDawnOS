@@ -64,19 +64,27 @@ bool PeripheralComponentInterconnectController::DeviceHasFunction(uint8_t bus, u
     return Read(bus, device, 0, 0x0E) & (1 << 7);
 }
 
-void PeripheralComponentInterconnectController::SelectDrivers(Drivers::DriverManager* drivermanager) 
+void PeripheralComponentInterconnectController::SelectDrivers(Drivers::DriverManager* drivermanager,
+                                                              InterruptManager* interrupt) 
 {
     for(uint16_t bus = 0; bus < 256; bus++)
     {
         for(uint8_t device = 0; device < 32;device++)
         {
             uint16_t nFunctions = DeviceHasFunction((uint8_t)bus, device) ? 8 : 1;
+
             for(uint8_t nfunc = 0; nfunc < nFunctions; nfunc++)
             {
                 PeripheralComponentInterconnectDeviceDescriptor dev = GetDeviceDescriptor(bus, device, nfunc);
 
+                // if(bus == 0 && device == 0x0d)
+                // {
+                //     printfHex(dev.nVenderID);
+                //     printf("\n");
+                // }
+
                 if(dev.nVenderID == 0 || dev.nVenderID == 0xffff)
-                    break;
+                    continue;
                 
                 printf("PCI BUS ");
                 printfHex(bus & 0xff);
@@ -96,6 +104,22 @@ void PeripheralComponentInterconnectController::SelectDrivers(Drivers::DriverMan
                 printfHex(dev.nDeviceID & 0xff);
 
                 printf("\n");
+
+                for(int barNum = 0;barNum < 6;barNum++)
+                {
+                    BaseAddressRegister bar = GetBaseAddressRegister(bus, device, nfunc, barNum);
+
+                    if(bar.address && (bar.type == IOPort))
+                    {
+                        dev.nPortBase = (uint32_t)bar.address;
+                    }
+
+                    IDriver* driver = GetDriver(dev, interrupt);
+                    if(NULL != driver)
+                    {
+                        drivermanager->AddDriver(driver);
+                    }
+                }
             }
         }
     }
@@ -129,3 +153,78 @@ PeripheralComponentInterconnectDeviceDescriptor PeripheralComponentInterconnectC
 
     return result;
 }
+
+
+IDriver* PeripheralComponentInterconnectController::GetDriver(PeripheralComponentInterconnectDeviceDescriptor dev,
+                                                              InterruptManager* interrupt)
+{
+    switch (dev.nVenderID)
+    {
+    case 0x1022:                    //AMD
+        switch (dev.nDeviceID)
+        {
+        case 0x2000:
+            printf("AMD");
+            break;
+        }
+        break;
+    case 0x8086:                    //Intel
+        printf("Intel");
+        break;
+    default:
+        break;
+    }
+
+    switch (dev.nClassID)
+    {
+    case 0x03:                      //
+        switch (dev.nSubClassID)
+        {
+        case 0x00:                  //VGA
+            printf("VGA");
+            break;
+        default:
+            break;
+        }
+        break;   
+    default:
+        break;
+    }
+}
+
+BaseAddressRegister PeripheralComponentInterconnectController::GetBaseAddressRegister(Common::uint8_t nbus,
+                                                                                      Common::uint8_t ndevice,
+                                                                                      Common::uint8_t nfunction,
+                                                                                      Common::uint8_t bar) 
+{
+    BaseAddressRegister result;
+
+    uint32_t headertype = Read(nbus, ndevice, nfunction, 0x0E) & 0x7e;
+
+    int maxBARS = 6 - 4 * headertype;
+
+    if(bar >= maxBARS)
+        return result;
+
+    uint32_t bar_value = Read(nbus, ndevice, nfunction, 0x10 + 4 * bar);
+
+    result.type = (bar_value & 1) ? IOPort : MemoryMapping;
+
+    if(result.type == MemoryMapping)
+    {
+        switch ((bar_value >> 1) & 0x3)
+        {
+        case 0:
+        case 1:
+        case 2:
+        default:
+            break;
+        }
+    }
+    else
+    {
+        result.address = (uint8_t*)(bar_value & ~0x3);
+        result.preference = false;
+    }
+}
+

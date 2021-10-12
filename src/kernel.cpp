@@ -109,7 +109,7 @@ extern "C" void kernelMain(void* multiboot_strcuture, uint32_t magicnumber)
     oDrvManager.AddDriver(&oMouseDriver);
 
     PeripheralComponentInterconnectController PCIController;
-    PCIController.SelectDrivers(&oDrvManager);
+    PCIController.SelectDrivers(&oDrvManager, &interrupts);
 
     oDrvManager.ActivateAllHardWare();                              //激活所有硬件
 
